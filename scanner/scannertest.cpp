@@ -1,4 +1,4 @@
-#include "scanner.cpp"
+#include "scanner.h"
 int main()
 {
     InitScanner("text.txt");

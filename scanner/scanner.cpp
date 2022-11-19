@@ -10,7 +10,7 @@ void SetTokenBufferEmpty()
     memset(TokenBuffer, 0, MAX_TOKEN_LEN);
 }
 
-bool InitScanner(const char *FileName)
+extern int InitScanner(const char *FileName)
 {
     InFile = fopen(FileName, "r");
     if (InFile != NULL)
@@ -18,16 +18,15 @@ bool InitScanner(const char *FileName)
     return false;
 }
 
-void CloseScanner()
+extern void CloseScanner()
 {
     if (InFile != NULL)
         fclose(InFile);
 }
 
 char GetChar()
-{ // change all character to Capital letter
+{
     char c = getc(InFile);
-    // cout<<c<<endl;
     return toupper(c);
 }
 
@@ -46,7 +45,7 @@ Token CheckKeyToken(const char *NowString)
             return TokenTab[i];
     }
     Token errortoken;
-    memset(&errortoken, 0, sizeof(Token)); //局部变量需置零
+    memset(&errortoken, 0, sizeof(Token));
     errortoken.type = ERRTOKEN;
     return errortoken;
 }
@@ -59,7 +58,7 @@ void AddToTokenBuffer(char c)
     TokenBuffer[len + 1] = '\0';
 }
 
-Token GetToken()
+extern Token GetToken()
 {
     Token token;
     memset(&token, 0, sizeof(Token));
@@ -93,7 +92,6 @@ Token GetToken()
         BackChar(c);
         token = CheckKeyToken(TokenBuffer);
         token.lexeme = TokenBuffer;
-        // cout<<token.type<<' '<<token.lexeme<<endl;
         return token;
     }
     else if (isdigit(c))

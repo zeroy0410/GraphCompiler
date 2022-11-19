@@ -59,3 +59,7 @@ static Token TokenTab[] = {
 	{STEP, "STEP", 0.0, NULL},
 	{DRAW, "DRAW", 0.0, NULL},
 };
+
+extern int InitScanner(const char *);
+extern Token GetToken(void);
+extern void CloseScanner(void);
