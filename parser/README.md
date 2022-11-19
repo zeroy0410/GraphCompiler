@@ -1,0 +1,3 @@
+FetchToken:获取一个token并检查它是否是error token。
+MatchToken:检查当前token是否匹配所需token，并自动获取下一个token。
+MakeExprNode:新建一个表达式树结点。
