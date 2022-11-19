@@ -1,4 +1,6 @@
 #include "parser.h"
+#include "scanner/scanner.h"
+#include "semantic/semantic.h"
 #include <stdlib.h>
 #include <stdarg.h>
 
@@ -177,12 +179,11 @@ void origin_statement(void)
     MatchToken(IS);
     MatchToken(L_BRACKET);
 
-    // get the value
     node = expression();
-    // origin_x = get_expr_val(node);
+    origin_x = get_expr_val(node);
     MatchToken(COMMA);
     node = expression();
-    // origin_y = get_expr_val(node);
+    origin_y = get_expr_val(node);
     MatchToken(R_BRACKET);
 }
 
@@ -264,5 +265,36 @@ void var_statement(void)
     MatchToken(IS);
     node = expression();
     // t->val = get_expr_val(node);
+}
+
+void parser()
+{
+    FetchToken();
+    while (cur_token->type != NONTOKEN)
+    {
+        switch(cur_token->type)
+        {
+            case ORIGIN:
+                    origin_statement();
+                    break;
+            case SCALE:
+                    scale_statement();
+                    break;
+            case ROT:
+                    rot_statement();
+                    break;
+            case FOR:
+                    for_statement();
+                    break;
+            case T:
+                    break;
+            case SEMICO:
+                    break;
+            default:
+                    err_exit("", "", -EFAULT);
+                    break;
+        }
+        MatchToken(SEMICO);
+    }
 }
 
