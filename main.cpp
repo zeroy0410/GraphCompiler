@@ -13,7 +13,7 @@ int main(int argc, char **argv, char **envp)
     char    choice;
 
     if (argc < 2)
-        err_exit("Usage: ./main [object file]", "", -EFAULT);
+        err_exit("Usage: ./GraphCompiler [object file]", "", -EFAULT);
 
     // init the scanner, open the input file
     if (!InitScanner(argv[1]))
