@@ -1,5 +1,8 @@
-#include"scanner/scanner.h"
-#include"errorReporter/errorReporter.h"
+#ifndef PARSER_H
+#define PARSER_H
+
+#include"../scanner/scanner.h"
+#include"../errorReporter/errorReporter.h"
 
 typedef double (*FuncPtr)(double);
 struct ExprNode{
@@ -20,3 +23,5 @@ struct ExprNode{
 static struct Token *cur_token;
 
 extern void parser(void);
+
+#endif

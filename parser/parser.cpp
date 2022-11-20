@@ -1,19 +1,22 @@
 #include "parser.h"
-#include "scanner/scanner.h"
-#include "semantic/semantic.h"
+#include "../semantic/semantic.h"
 #include <stdlib.h>
 #include <stdarg.h>
+#include<errno.h>
+#include<iostream>
 
-static ExprNode *MakeExprNode(enum token_type opcode, void *arg1, void *arg2);
-static ExprNode *atom(void);
-static ExprNode *component(void);
-static ExprNode *factor(void);
-static ExprNode *term(void);
-static ExprNode *expression(void);
+using namespace std;
+
+static ExprNode *MakeExprNode(Token_Type opcode, void *arg1, void *arg2);
+static ExprNode *atom();
+static ExprNode *component();
+static ExprNode *factor();
+static ExprNode *term();
+static ExprNode *expression();
 
 void FetchToken()
 {
-    cur_token = &GetToken();
+    cur_token = GetToken();
     if (cur_token->type == ERRTOKEN)
         err_exit("error at fetching token.", nullptr, -EFAULT);
 }
@@ -66,7 +69,8 @@ ExprNode *atom()
         break;
     case T:
         MatchToken(T);
-        new_node = MakeExprNode(T, &(per_token->value), nullptr);
+        // cout<<"haha3: "<<&per_token->value<<endl;
+        new_node = MakeExprNode(T, &per_token->value, nullptr);
         break;
     case FUNC:
         MatchToken(FUNC);
@@ -84,6 +88,7 @@ ExprNode *atom()
         err_exit("Invalid expression", nullptr, -EFAULT);
         break;
     }
+    return new_node;
 }
 
 ExprNode *expression()
@@ -180,10 +185,10 @@ void origin_statement(void)
     MatchToken(L_BRACKET);
 
     node = expression();
-    origin_x = get_expr_val(node);
+    origin_x = GetExprVal(node);
     MatchToken(COMMA);
     node = expression();
-    origin_y = get_expr_val(node);
+    origin_y = GetExprVal(node);
     MatchToken(R_BRACKET);
 }
 
@@ -196,12 +201,12 @@ void scale_statement(void)
     MatchToken(L_BRACKET);
 
     node = expression();
-    // scale_x = get_expr_val(node);
+    scale_x = GetExprVal(node);
 
     MatchToken(COMMA);
 
     node = expression();
-    // scale_y = get_expr_val(node);
+    scale_y = GetExprVal(node);
 
     MatchToken(R_BRACKET);
 }
@@ -214,7 +219,7 @@ void rot_statement(void)
     MatchToken(IS);
 
     node = expression();
-    // rot = get_expr_val(node);
+    rot = GetExprVal(node);
 }
 
 
@@ -230,19 +235,20 @@ void for_statement(void)
 
     MatchToken(FOR);
     t = cur_token;
+    // cout<<"haha4: "<<&cur_token->value<<endl;
     MatchToken(T);
 
     MatchToken(FROM);
     node = expression();
-    // start = get_expr_val(node);
+    start = GetExprVal(node);
 
     MatchToken(TO);
     node = expression();
-    // end = get_expr_val(node);
+    end = GetExprVal(node);
 
     MatchToken(STEP);
     node = expression();
-    // step = get_expr_val(node);
+    step = GetExprVal(node);
 
     MatchToken(DRAW);
     MatchToken(L_BRACKET);
@@ -251,7 +257,7 @@ void for_statement(void)
     node_y = expression();
     MatchToken(R_BRACKET);
 
-    // draw_loop(t, start, end, step, node_x, node_y);
+    DrawLoop(t, start, end, step, node_x, node_y);
 }
 
 
@@ -264,7 +270,7 @@ void var_statement(void)
     MatchToken(T);
     MatchToken(IS);
     node = expression();
-    // t->val = get_expr_val(node);
+    t->value = GetExprVal(node);
 }
 
 void parser()

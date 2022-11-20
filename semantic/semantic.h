@@ -1,11 +1,16 @@
-#include "parser/parser.h"
+#ifndef SEMANTIC_H
+#define SEMANTIC_H
 
+#include "../parser/parser.h"
+#include "../errorReporter/errorReporter.h"
 extern double scale_x;
 extern double scale_y;
 extern double origin_x;
 extern double origin_y;
 extern double rot;
 
-extern double get_expr_val(struct expr_node *tree);
-extern void draw_loop(struct token *param, double start, double end, double step, struct expr_node *exp_x, struct expr_node *exp_y);
-extern void close_drawer(void);
+extern double GetExprVal(ExprNode *tree);
+extern void DrawLoop(Token *param, double start, double end, double step, ExprNode *exp_x, ExprNode *exp_y);
+extern void CloseDrawer();
+
+#endif

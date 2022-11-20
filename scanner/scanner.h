@@ -1,8 +1,11 @@
+#ifndef SCANNER_H
+#define SCANNER_H
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include<ctype.h>
+#include <ctype.h>
 
 enum Token_Type
 {
@@ -61,5 +64,7 @@ static Token TokenTab[] = {
 };
 
 extern int InitScanner(const char *);
-extern Token GetToken(void);
-extern void CloseScanner(void);
+extern Token *GetToken();
+extern void CloseScanner();
+
+#endif

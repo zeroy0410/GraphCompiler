@@ -58,25 +58,25 @@ void AddToTokenBuffer(char c)
     TokenBuffer[len + 1] = '\0';
 }
 
-extern Token GetToken()
+extern Token* GetToken()
 {
-    Token token;
-    memset(&token, 0, sizeof(Token));
+    Token* token=new Token;
     char c;
     SetTokenBufferEmpty();
-    token.lexeme = TokenBuffer;
+    token->lexeme = TokenBuffer;
     while (1)
     {
         c = GetChar();
         if (c == EOF)
         {
-            token.type = NONTOKEN;
+            token->type = NONTOKEN;
             return token;
         }
-        if (c != ' ')
+        if (c != ' '&&c!=13&&c!=10)
             break;
     }
     AddToTokenBuffer(c);
+    // printf("C: %d %c\n",c,c);
     if (isalpha(c))
     {
         while (1)
@@ -90,8 +90,12 @@ extern Token GetToken()
                 break;
         }
         BackChar(c);
-        token = CheckKeyToken(TokenBuffer);
-        token.lexeme = TokenBuffer;
+        // printf("CC: %d %c\n",c,c);
+        token->type = CheckKeyToken(TokenBuffer).type;
+        token->FuncPtr = CheckKeyToken(TokenBuffer).FuncPtr;
+        token->value = CheckKeyToken(TokenBuffer).value;
+        token->lexeme = TokenBuffer;
+        if(token->type==9)token=&TokenTab[2];
         return token;
     }
     else if (isdigit(c))
@@ -115,30 +119,30 @@ extern Token GetToken()
                 else
                     break;
             }
-            BackChar(c);
-            token.type = CONST_ID;
-            token.value = atof(TokenBuffer);
-            return token;
         }
+        BackChar(c);
+        token->type = CONST_ID;
+        token->value = atof(TokenBuffer);
+        return token;
     }
     else
     {
         switch (c)
         {
         case ';':
-            token.type = SEMICO;
+            token->type = SEMICO;
             break;
         case '(':
-            token.type = L_BRACKET;
+            token->type = L_BRACKET;
             break;
         case ')':
-            token.type = R_BRACKET;
+            token->type = R_BRACKET;
             break;
         case ',':
-            token.type = COMMA;
+            token->type = COMMA;
             break;
         case '+':
-            token.type = PLUS;
+            token->type = PLUS;
             break;
         case '-':
             c = GetChar();
@@ -152,7 +156,7 @@ extern Token GetToken()
             else
             {
                 BackChar(c);
-                token.type = MINUS;
+                token->type = MINUS;
                 break;
             }
         case '/':
@@ -167,25 +171,26 @@ extern Token GetToken()
             else
             {
                 BackChar(c);
-                token.type = DIV;
+                token->type = DIV;
                 break;
             }
         case '*':
             c = GetChar();
             if (c == '*')
             {
-                token.type = POWER;
+                token->type = POWER;
                 break;
             }
             else
             {
                 BackChar(c);
-                token.type = MUL;
+                token->type = MUL;
                 break;
             }
         default:
-            token.type = ERRTOKEN;
+            token->type = ERRTOKEN;
             break;
         }
     }
+    return token;
 }
