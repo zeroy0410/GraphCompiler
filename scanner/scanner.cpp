@@ -58,9 +58,9 @@ void AddToTokenBuffer(char c)
     TokenBuffer[len + 1] = '\0';
 }
 
-extern Token* GetToken()
+extern Token *GetToken()
 {
-    Token* token=new Token;
+    Token *token = new Token;
     char c;
     SetTokenBufferEmpty();
     token->lexeme = TokenBuffer;
@@ -72,7 +72,7 @@ extern Token* GetToken()
             token->type = NONTOKEN;
             return token;
         }
-        if (c != ' '&&c!=13&&c!=10)
+        if (c != ' ' && c != 13 && c != 10)
             break;
     }
     AddToTokenBuffer(c);
@@ -95,7 +95,8 @@ extern Token* GetToken()
         token->FuncPtr = CheckKeyToken(TokenBuffer).FuncPtr;
         token->value = CheckKeyToken(TokenBuffer).value;
         token->lexeme = TokenBuffer;
-        if(token->type==9)token=&TokenTab[2];
+        if (token->type == 9)
+            token = &TokenTab[2];
         return token;
     }
     else if (isdigit(c))

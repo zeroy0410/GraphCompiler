@@ -2,8 +2,8 @@
 #include "../semantic/semantic.h"
 #include <stdlib.h>
 #include <stdarg.h>
-#include<errno.h>
-#include<iostream>
+#include <errno.h>
+#include <iostream>
 
 using namespace std;
 
@@ -93,9 +93,9 @@ ExprNode *atom()
 
 ExprNode *expression()
 {
-    ExprNode    *left;
-    ExprNode    *right;
-    Token_Type  type;
+    ExprNode *left;
+    ExprNode *right;
+    Token_Type type;
 
     left = term();
     while (cur_token->type == PLUS || cur_token->type == MINUS)
@@ -103,19 +103,18 @@ ExprNode *expression()
         type = cur_token->type;
         MatchToken(type);
         right = term();
-        left = MakeExprNode(type, 
-                reinterpret_cast<void*>(left), 
-                reinterpret_cast<void*>(right)
-        );
+        left = MakeExprNode(type,
+                            reinterpret_cast<void *>(left),
+                            reinterpret_cast<void *>(right));
     }
     return left;
 }
 
-ExprNode* term(void)
+ExprNode *term(void)
 {
-    ExprNode    *left;
-    ExprNode    *right;
-    Token_Type  type;
+    ExprNode *left;
+    ExprNode *right;
+    Token_Type type;
 
     left = factor();
     while (cur_token->type == MUL || cur_token->type == DIV)
@@ -123,49 +122,48 @@ ExprNode* term(void)
         type = cur_token->type;
         MatchToken(type);
         right = factor();
-        left = MakeExprNode(type, 
-                reinterpret_cast<void*>(left), 
-                reinterpret_cast<void*>(right)
-        );
+        left = MakeExprNode(type,
+                            reinterpret_cast<void *>(left),
+                            reinterpret_cast<void *>(right));
     }
     return left;
 }
 
-ExprNode* factor(void)
+ExprNode *factor(void)
 {
-    ExprNode    *left;
-    ExprNode    *right;
+    ExprNode *left;
+    ExprNode *right;
 
-    switch(cur_token->type)
+    switch (cur_token->type)
     {
-        case PLUS:
-                MatchToken(PLUS);
-                right = factor();
-                left = new ExprNode;
-                left->OpCode = PLUS;
-                left->Content.CaseConst = 0.0;
-                right = MakeExprNode(PLUS, left, right);
-                break;
-        case MINUS:
-                MatchToken(MINUS);
-                right = factor();
-                left = new ExprNode;
-                left->OpCode = CONST_ID;
-                left->Content.CaseConst = 0.0;
-                right = MakeExprNode(MINUS, left, right);
-                break;
-        default:
-                right = component();
-                break;
+    case PLUS:
+        MatchToken(PLUS);
+        right = factor();
+        left = new ExprNode;
+        left->OpCode = PLUS;
+        left->Content.CaseConst = 0.0;
+        right = MakeExprNode(PLUS, left, right);
+        break;
+    case MINUS:
+        MatchToken(MINUS);
+        right = factor();
+        left = new ExprNode;
+        left->OpCode = CONST_ID;
+        left->Content.CaseConst = 0.0;
+        right = MakeExprNode(MINUS, left, right);
+        break;
+    default:
+        right = component();
+        break;
     }
 
     return right;
 }
 
-ExprNode* component(void)
+ExprNode *component(void)
 {
-    ExprNode    *left;
-    ExprNode    *right;
+    ExprNode *left;
+    ExprNode *right;
     left = atom();
     if (cur_token->type == POWER)
     {
@@ -178,7 +176,7 @@ ExprNode* component(void)
 
 void origin_statement(void)
 {
-    ExprNode  *node;
+    ExprNode *node;
 
     MatchToken(ORIGIN);
     MatchToken(IS);
@@ -213,7 +211,7 @@ void scale_statement(void)
 
 void rot_statement(void)
 {
-    ExprNode    *node;
+    ExprNode *node;
 
     MatchToken(ROT);
     MatchToken(IS);
@@ -222,16 +220,15 @@ void rot_statement(void)
     rot = GetExprVal(node);
 }
 
-
 void for_statement(void)
 {
-    ExprNode    *node;
-    Token        *t;
-    double       start;
-    double       end;
-    double       step;
-    ExprNode    *node_x;
-    ExprNode    *node_y;
+    ExprNode *node;
+    Token *t;
+    double start;
+    double end;
+    double step;
+    ExprNode *node_x;
+    ExprNode *node_y;
 
     MatchToken(FOR);
     t = cur_token;
@@ -260,11 +257,10 @@ void for_statement(void)
     DrawLoop(t, start, end, step, node_x, node_y);
 }
 
-
 void var_statement(void)
 {
-    ExprNode    *node;
-    Token        *t;
+    ExprNode *node;
+    Token *t;
 
     t = cur_token;
     MatchToken(T);
@@ -278,29 +274,28 @@ void parser()
     FetchToken();
     while (cur_token->type != NONTOKEN)
     {
-        switch(cur_token->type)
+        switch (cur_token->type)
         {
-            case ORIGIN:
-                    origin_statement();
-                    break;
-            case SCALE:
-                    scale_statement();
-                    break;
-            case ROT:
-                    rot_statement();
-                    break;
-            case FOR:
-                    for_statement();
-                    break;
-            case T:
-                    break;
-            case SEMICO:
-                    break;
-            default:
-                    err_exit("", "", -EFAULT);
-                    break;
+        case ORIGIN:
+            origin_statement();
+            break;
+        case SCALE:
+            scale_statement();
+            break;
+        case ROT:
+            rot_statement();
+            break;
+        case FOR:
+            for_statement();
+            break;
+        case T:
+            break;
+        case SEMICO:
+            break;
+        default:
+            err_exit("", "", -EFAULT);
+            break;
         }
         MatchToken(SEMICO);
     }
 }
-

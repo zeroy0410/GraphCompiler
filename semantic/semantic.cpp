@@ -22,7 +22,7 @@ void InitDrawer()
 
     fprintf(draw_py_file, "from tkinter import *\n");
     fprintf(draw_py_file, "tk = Tk()\n");
-    fprintf(draw_py_file, "canvas = Canvas(tk, width = 1200, height = 800)\n");
+    fprintf(draw_py_file, "canvas = Canvas(tk, width = 800, height = 600)\n");
     fprintf(draw_py_file, "canvas.pack()\n");
 }
 

@@ -1,23 +1,27 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include"../scanner/scanner.h"
-#include"../errorReporter/errorReporter.h"
+#include "../scanner/scanner.h"
+#include "../errorReporter/errorReporter.h"
 
 typedef double (*FuncPtr)(double);
-struct ExprNode{
+struct ExprNode
+{
     Token_Type OpCode;
-    union{
-        struct{
+    union
+    {
+        struct
+        {
             ExprNode *Left, *Right;
         } CaseOperator;
-        struct{
+        struct
+        {
             ExprNode *Child;
             FuncPtr MathFuncPtr;
-        }CaseFunc;
+        } CaseFunc;
         double CaseConst;
         double *CaseParmPtr;
-    }Content;
+    } Content;
 };
 
 static struct Token *cur_token;
